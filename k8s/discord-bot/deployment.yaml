@@ -42,7 +42,7 @@ spec:
       # ══════════════════════════════════════════════════════
       containers:
       - name: discord-bot
-        image: beckk97/lol-esports-bot:v1.0.0
+        image: beckk97/lol-esports-bot:d284174
         imagePullPolicy: Always
         
         # ────────────────────────────────────────────────────
