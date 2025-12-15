@@ -1,0 +1,85 @@
+# ══════════════════════════════════════════════════════════════
+# PROMETHEUS CONFIGURATION
+# ══════════════════════════════════════════════════════════════
+
+prometheus:
+  prometheusSpec:
+    # Rétention des données
+    retention: 30d
+    # Garder 30 jours d'historique
+    
+    # Storage
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    # PVC de 10Gi pour stocker les métriques
+    
+    # Resources
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+# ══════════════════════════════════════════════════════════════
+# GRAFANA CONFIGURATION
+# ══════════════════════════════════════════════════════════════
+
+grafana:
+  # Admin password
+  adminPassword: "admin"
+  # ⚠️ Change this in production!
+  
+  # Persistence
+  persistence:
+    enabled: true
+    size: 5Gi
+  # PVC de 5Gi pour stocker les dashboards
+  
+  # Resources
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  
+  # Pas d'Ingress (on utilise port-forward)
+  ingress:
+    enabled: false
+
+# ══════════════════════════════════════════════════════════════
+# ALERTMANAGER CONFIGURATION (Optionnel)
+# ══════════════════════════════════════════════════════════════
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+# ══════════════════════════════════════════════════════════════
+# NODE EXPORTER (Métriques système)
+# ══════════════════════════════════════════════════════════════
+
+nodeExporter:
+  enabled: true
+
+# ══════════════════════════════════════════════════════════════
+# KUBE STATE METRICS (Métriques Kubernetes)
+# ══════════════════════════════════════════════════════════════
+
+kubeStateMetrics:
+  enabled: true

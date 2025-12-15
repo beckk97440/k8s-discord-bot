@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot
+  namespace: lol-esports
+  labels:
+    app: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      # ══════════════════════════════════════════════════════
+      # SECURITY CONTEXT (POD-LEVEL)
+      # ══════════════════════════════════════════════════════
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      
+      # ══════════════════════════════════════════════════════
+      # NODE AFFINITY - Préférer le laptop
+      # ══════════════════════════════════════════════════════
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - tpre-nas
+      
+      # ══════════════════════════════════════════════════════
+      # CONTAINERS
+      # ══════════════════════════════════════════════════════
+      containers:
+      - name: discord-bot
+        image: beckk97/lol-esports-bot:v1.0.0
+        imagePullPolicy: Always
+        
+        # ────────────────────────────────────────────────────
+        # SECURITY CONTEXT (CONTAINER-LEVEL)
+        # ────────────────────────────────────────────────────
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
+        
+        # ────────────────────────────────────────────────────
+        # VARIABLES D'ENVIRONNEMENT (depuis Secret)
+        # ────────────────────────────────────────────────────
+        env:
+        - name: DISCORD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: discord-bot-secret
+              key: DISCORD_TOKEN
+        - name: MATCH_CHANNEL_ID
+          valueFrom:
+            secretKeyRef:
+              name: discord-bot-secret
+              key: MATCH_CHANNEL_ID
+        - name: NEWS_CHANNEL_ID
+          valueFrom:
+            secretKeyRef:
+              name: discord-bot-secret
+              key: NEWS_CHANNEL_ID
+        
+        # ────────────────────────────────────────────────────
+        # RESOURCES (CPU + RAM)
+        # ────────────────────────────────────────────────────
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        
+        # ────────────────────────────────────────────────────
+        # VOLUME MOUNTS
+        # ────────────────────────────────────────────────────
+        volumeMounts:
+        - name: bot-data
+          mountPath: /app/data
+        - name: tmp
+          mountPath: /tmp
+        
+        # ────────────────────────────────────────────────────
+        # HEALTH CHECKS
+        # ────────────────────────────────────────────────────
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - "import sys; sys.exit(0)"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - "import sys; sys.exit(0)"
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      
+      # ══════════════════════════════════════════════════════
+      # VOLUMES
+      # ══════════════════════════════════════════════════════
+      volumes:
+      - name: bot-data
+        persistentVolumeClaim:
+          claimName: discord-bot-data
+      - name: tmp
+        emptyDir: {}

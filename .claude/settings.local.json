@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl get:*)",
+      "Bash(helm list:*)",
+      "Bash(helm install:*)",
+      "Bash(kubectl --namespace monitoring get pods)",
+      "Bash(kubectl --namespace monitoring get svc)"
+    ]
+  }
+}
