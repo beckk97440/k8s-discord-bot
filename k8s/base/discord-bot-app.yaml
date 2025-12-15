@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: discord-bot
+  namespace: argocd
+spec:
+  # Project
+  project: default
+  
+  # Source (Git)
+  source:
+    repoURL: https://github.com/beckk97440/k8s-discord-bot.git
+    targetRevision: HEAD
+    path: k8s/discord-bot
+  
+  # Destination (Cluster)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: lol-esports
+  
+  # Sync Policy
+  syncPolicy:
+    # Auto-sync activé
+    automated:
+      prune: true       # Supprime les ressources qui ne sont plus dans Git
+      selfHeal: true    # Corrige automatiquement si quelqu'un modifie manuellement
+      allowEmpty: false
+
+    # Options
+    syncOptions:
+    - CreateNamespace=true
+    - PrunePropagationPolicy=foreground
+    - PruneLast=true
