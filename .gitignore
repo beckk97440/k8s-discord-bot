@@ -14,3 +14,9 @@ lambda_watchdog.zip
 *.pem
 *.key
 .env
+
+# Claude Code
+.claude/
+
+# macOS
+.DS_Store
