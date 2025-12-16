@@ -37,4 +37,42 @@ done
 echo "K3s server is ready!"
 kubectl get nodes
 
+
+# INSTALL ARGOCD
+
+echo "Installing ArgoCD..."
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+echo "Waiting for ArgoCD to be ready..."
+kubectl wait --for=condition=available --timeout=600s deployment/argocd-server -n argocd
+kubectl wait --for=condition=available --timeout=600s deployment/argocd-repo-server -n argocd
+
+echo "ArgoCD is ready!"
+
+
+# CREATE DISCORD BOT SECRETS
+
+echo "Creating discord-bot namespace and secrets..."
+kubectl create namespace lol-esports --dry-run=client -o yaml | kubectl apply -f -
+
+kubectl create secret generic discord-bot-secret \
+  --from-literal=DISCORD_TOKEN="${discord_token}" \
+  --from-literal=MATCH_CHANNEL_ID="${match_channel_id}" \
+  --from-literal=NEWS_CHANNEL_ID="${news_channel_id}" \
+  -n lol-esports \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+echo "Secrets created!"
+
+
+# DEPLOY DISCORD BOT VIA ARGOCD
+
+echo "Deploying discord-bot application..."
+kubectl apply -f https://raw.githubusercontent.com/beckk97440/k8s-discord-bot/main/k8s/base/discord-bot-app.yaml
+
+echo "Waiting for discord-bot to sync..."
+sleep 30
+
 echo "Setup complete!"
+kubectl get pods -n lol-esports

@@ -39,7 +39,13 @@ resource "aws_instance" "worker" {
 
   user_data = templatefile("${path.module}/user-data.sh", {
     tailscale_auth_key = var.tailscale_auth_key
+    discord_token      = var.discord_token
+    match_channel_id   = var.match_channel_id
+    news_channel_id    = var.news_channel_id
   })
+
+  # Force recreation when user_data changes
+  user_data_replace_on_change = true
 
   root_block_device {
     volume_type = "gp3"

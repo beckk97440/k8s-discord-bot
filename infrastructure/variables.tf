@@ -51,3 +51,27 @@ variable "tailscale_auth_key" {
   sensitive   = true  # Hidden in logs
   # No default, in terraform.tfvars
 }
+
+
+# DISCORD BOT SECRETS
+
+variable "discord_token" {
+  description = "Discord bot token"
+  type        = string
+  sensitive   = true  # Hidden in logs
+  # No default, in terraform.tfvars
+}
+
+variable "match_channel_id" {
+  description = "Discord match channel ID"
+  type        = string
+  sensitive   = true  # Hidden in logs
+  # No default, in terraform.tfvars
+}
+
+variable "news_channel_id" {
+  description = "Discord news channel ID"
+  type        = string
+  sensitive   = true  # Hidden in logs
+  # No default, in terraform.tfvars
+}
