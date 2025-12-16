@@ -45,11 +45,11 @@ A Discord bot that automatically posts League of Legends esports match updates a
 ├── k8s/                   # Kubernetes manifests
 │   ├── discord-bot/       # Bot deployment, PVC, secrets
 │   └── base/              # ArgoCD application config
-├── infrastructure/        # Terraform + healthcheck
-│   ├── ec2.tf            # EC2 instance configuration
-│   ├── lambda.tf         # Watchdog function
-│   ├── user-data.sh      # EC2 bootstrap script
-│   └── healthcheck/      # Healthcheck service for NAS
+├── infrastructure/        # Infrastructure as code
+│   └── aws/              # AWS-specific resources (Terraform)
+│       ├── ec2.tf        # EC2 instance configuration
+│       ├── lambda.tf     # Watchdog function
+│       └── user-data.sh  # EC2 bootstrap script
 └── .github/workflows/     # CI/CD pipeline
     └── build-and-deploy.yaml
 ```
@@ -81,14 +81,14 @@ With 99% uptime on home NAS:
 ### Deploy Infrastructure
 
 ```bash
-cd infrastructure
+cd infrastructure/aws
 terraform init
 terraform apply
 ```
 
 ### Required Secrets
 
-Create `infrastructure/terraform.tfvars` (gitignored):
+Create `infrastructure/aws/terraform.tfvars` (gitignored):
 ```hcl
 healthcheck_url    = "https://your-nas.tailscale.net/health"
 tailscale_auth_key = "tskey-auth-..."
