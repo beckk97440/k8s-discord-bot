@@ -30,13 +30,19 @@ infrastructure/kubernetes/
 
 ## Installation complète (première fois)
 
-### Étape 1 : Installer k3s (si pas déjà fait)
+### Étape 1 : Installer k3s
 
 ```bash
-curl -sfL https://get.k3s.io | sh -
-sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+# Utiliser le script d'initialisation
+cd infrastructure
+./init-k3s.sh
 ```
+
+Le script va :
+- Installer k3s si pas déjà fait
+- Configurer les permissions
+- Attendre que k3s soit prêt
+- Configurer kubectl
 
 ### Étape 2 : Déployer l'infrastructure avec Terraform
 
