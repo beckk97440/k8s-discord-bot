@@ -20,3 +20,14 @@ lambda_watchdog.zip
 
 # macOS
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE
+.vscode/
+.idea/

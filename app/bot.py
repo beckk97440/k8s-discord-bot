@@ -139,7 +139,7 @@ async def on_ready():
     print(f'✅ Bot connecté en tant que {bot.user}')
     print(f'📺 Match Channel: {MATCH_CHANNEL_ID}')
     print(f'📰 News Channel: {NEWS_CHANNEL_ID}')
-    print(f'🚀 CI/CD Pipeline Active - v2!')
+    print(f'🚀 CI/CD Pipeline Active!')
     
     if not check_matches.is_running():
         check_matches.start()
